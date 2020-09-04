@@ -1,0 +1,168 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Sistema de Inferencia Difuso</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-09-03"><meta name="DC.source" content="ReadFuzzy.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Sistema de Inferencia Difuso</h1><!--introduction--><p><b>Se realiza un sistema de inferencia difuso con Mamdani</b></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Codigo</a></li></ul></div><h2 id="1">Codigo</h2><pre class="codeinput">tabla = readtable(<span class="string">'DataEstudiantes.csv'</span>);  <span class="comment">%%Lee el archivo csv</span>
+tabla
+Nombres= tabla.Nombre;
+datos= removevars(tabla,{<span class="string">'Nombre'</span>}).Variables;      <span class="comment">%%Saca los datos numericos del archivo</span>
+fis = readfis(<span class="string">'Conocimiento.fis'</span>);                  <span class="comment">%%abre el sistema de inferencia difusa</span>
+Reglas= fis.Rules                                           <span class="comment">%% Muestra las reglas</span>
+plotfis(fis);                                       <span class="comment">%%Imprime el sistema</span>
+resultados = evalfis(fis,datos);                    <span class="comment">%%Almacena resultados</span>
+datosFinales = [Nombres, num2cell(resultados)];     <span class="comment">%%Genera una matriz de relacion</span>
+<span class="keyword">for</span> index =1: length(datosFinales(:,2))
+     <span class="keyword">if</span> (resultados(index)&gt;= 3)
+         datosFinales(index,3)=cellstr(<span class="string">"Paso"</span>);     <span class="comment">%%Se acondiciona la salida al tipo Paso o no paso</span>
+     <span class="keyword">else</span>
+         datosFinales(index,3)=cellstr(<span class="string">"No Paso"</span>);
+     <span class="keyword">end</span>
+<span class="keyword">end</span>
+datosFinales
+</pre><pre class="codeoutput">
+tabla =
+
+  9&times;4 table
+
+        Nombre        Disciplina    Organizado    Actitud
+    ______________    __________    __________    _______
+
+    {'Carlos'    }         6            0.2        7.05  
+    {'Jumildo'   }         7            0.8        6.35  
+    {'Rene'      }         3            0.4           4  
+    {'Archumildo'}         4            0.9        6.86  
+    {'Ana'       }         7           0.29          10  
+    {'Carolina'  }         1            0.9           7  
+    {'Gabriela'  }         3           0.63           5  
+    {'Jose'      }         9           0.08        2.29  
+    {'Pablo'     }       8.5            0.9           8  
+
+
+Reglas = 
+
+  1&times;4 fisrule array with properties:
+
+    Description
+    Antecedent
+    Consequent
+    Weight
+    Connection
+
+  Details:
+                                                       Description                                               
+         ________________________________________________________________________________________________________
+
+    1    "Disciplina==Baja | Organizado==No_Organizado | Actitudes==Desinteresado =&gt; Rendimiento=No_paso (1)"    
+    2    "Disciplina==Promedio | Organizado==Organizado | Actitudes==Normal =&gt; Rendimiento=Paso (1)"             
+    3    "Disciplina==Mucha | Organizado==Organizado | Actitudes==Interesado =&gt; Rendimiento=Paso (1)"            
+    4    "Disciplina==Promedio | Organizado==No_Organizado | Actitudes==Desinteresado =&gt; Rendimiento=No_paso (1)"
+
+
+datosFinales =
+
+  9&times;3 cell array
+
+    {'Carlos'    }    {[2.4177]}    {'No Paso'}
+    {'Jumildo'   }    {[2.7960]}    {'No Paso'}
+    {'Rene'      }    {[2.4856]}    {'No Paso'}
+    {'Archumildo'}    {[2.4091]}    {'No Paso'}
+    {'Ana'       }    {[2.9063]}    {'No Paso'}
+    {'Carolina'  }    {[2.4293]}    {'No Paso'}
+    {'Gabriela'  }    {[2.5017]}    {'No Paso'}
+    {'Jose'      }    {[2.4074]}    {'No Paso'}
+    {'Pablo'     }    {[4.0551]}    {'Paso'   }
+
+</pre><img vspace="5" hspace="5" src="ReadFuzzy_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Sistema de Inferencia Difuso
+% *Se realiza un sistema de inferencia difuso con Mamdani*
+% 
+%% Codigo
+tabla = readtable('DataEstudiantes.csv');  %%Lee el archivo csv
+tabla
+Nombres= tabla.Nombre;                              
+datos= removevars(tabla,{'Nombre'}).Variables;      %%Saca los datos numericos del archivo
+fis = readfis('Conocimiento.fis');                  %%abre el sistema de inferencia difusa
+Reglas= fis.Rules                                           %% Muestra las reglas
+plotfis(fis);                                       %%Imprime el sistema
+resultados = evalfis(fis,datos);                    %%Almacena resultados
+datosFinales = [Nombres, num2cell(resultados)];     %%Genera una matriz de relacion
+for index =1: length(datosFinales(:,2))
+     if (resultados(index)>= 3) 
+         datosFinales(index,3)=cellstr("Paso");     %%Se acondiciona la salida al tipo Paso o no paso
+     else
+         datosFinales(index,3)=cellstr("No Paso");
+     end
+end
+datosFinales
+
+
+
+ 
+##### SOURCE END #####
+--></body></html>

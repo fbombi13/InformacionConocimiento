@@ -1,0 +1,48 @@
+[System]
+Name='Conocimiento'
+Type='mamdani'
+Version=2.0
+NumInputs=3
+NumOutputs=1
+NumRules=4
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Disciplina'
+Range=[0 9]
+NumMFs=3
+MF1='Baja':'gaussmf',[1.911 -1.388e-16]
+MF2='Promedio':'gaussmf',[1.911 4.5]
+MF3='Mucha':'gaussmf',[1.911 9]
+
+[Input2]
+Name='Organizado'
+Range=[0 1]
+NumMFs=2
+MF1='No_Organizado':'trapmf',[0 0 0.1 0.3]
+MF2='Organizado':'trapmf',[0.6 0.9 1.1 1.9]
+
+[Input3]
+Name='Actitudes'
+Range=[0 10]
+NumMFs=3
+MF1='Desinteresado':'gauss2mf',[1 -0.5 1.699 0.5]
+MF2='Normal':'gauss2mf',[1 4.5 1 5.5]
+MF3='Interesado':'gauss2mf',[1.699 9.5 1.699 10.5]
+
+[Output1]
+Name='Rendimiento'
+Range=[-2 7]
+NumMFs=2
+MF1='No_paso':'trimf',[-2 0 3]
+MF2='Paso':'trimf',[3 5 7]
+
+[Rules]
+1 1 1, 1 (1) : 2
+2 2 2, 2 (1) : 2
+3 2 3, 2 (1) : 2
+2 1 1, 1 (1) : 2
